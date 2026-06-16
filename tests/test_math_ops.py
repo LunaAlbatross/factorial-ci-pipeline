@@ -1,17 +1,33 @@
-import pytest
-from src.math_ops import factorial
+name: Python Automation Pipeline
 
-def test_factorial_standard_values():
-    # Test typical positive integers
-    assert factorial(4) == 24
-    assert factorial(5) == 120
+# What triggers this pipeline?
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-def test_factorial_edge_cases():
-    # Test the boundary values
-    assert factorial(0) == 1
-    assert factorial(1) == 1
+# What actions should it take?
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest # Uses a fresh Linux server hosted by GitHub
 
-def test_factorial_negative_raises_error():
-    # Verify that the function correctly throws an error for negative numbers
-    with pytest.raises(ValueError):
-        factorial(-5)
+    steps:
+    - name: Pull code from GitHub repository
+      uses: actions/checkout@v4
+
+    - name: Install Python on the server
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install pytest dependency
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Execute pytest validation
+      env:
+        PYTHONPATH: .
+      run: |
+        pytest
