@@ -1,16 +1,14 @@
 name: Python Automation Pipeline
 
-# What triggers this pipeline?
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-# What actions should it take?
 jobs:
   run-tests:
-    runs-on: ubuntu-latest # Uses a fresh Linux server hosted by GitHub
+    runs-on: ubuntu-latest
 
     steps:
     - name: Pull code from GitHub repository
@@ -27,5 +25,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Execute pytest validation
+      env:
+        PYTHONPATH: .
       run: |
         pytest
